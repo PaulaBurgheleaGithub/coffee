@@ -31,3 +31,10 @@ addEventListener("load", async () => {
     console.log("err", err);
   }
 });
+
+function displayDrinks(display = document.getElementById("output")) {
+  const selectedDrink = document.getElementsByTagName("option");
+  selectedDrink.addEventListener("click", () => {
+    display.textContent = selectedDrink;
+  });
+}
