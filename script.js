@@ -1,18 +1,19 @@
-// console.log(sel[1]);
 const url = "https://api.sampleapis.com/coffee/hot";
+const sel = document.getElementById("coffeeList");
+const display = document.getElementById("output");
 
 try {
   const response = await fetch(url);
-  console.log("response:", response);
+  console.info("response:", response);
 
   if (!response.ok) throw response;
 
   const data = await response.json();
-  console.log("data:", data);
-  const sel = document.getElementById("coffeeList");
+  console.table(data);
+
   const frag = document.createDocumentFragment();
 
-  // ADDED DEFAULT OPTION
+  // added default option
   const defaultOption = document.createElement("option");
   defaultOption.value = "";
   defaultOption.textContent = " --Please choose-- ";
@@ -22,17 +23,30 @@ try {
     const option = document.createElement("option");
     option.value = drink.id;
     option.textContent = drink.title;
-    console.log(option);
     frag.append(option);
   }
   sel.replaceChildren(frag);
+
+  sel.addEventListener("change", (e) => {
+    const selectedOptions = sel.selectedOptions;
+    const id = sel.value;
+    const coffee = data.find((c) => {
+      return c.id === Number(id);
+    });
+
+    //  console.log(coffee);
+    displayDrinks(coffee);
+  });
 } catch (err) {
-  console.log("err", err);
+  console.error("err", err);
 }
 
-// function displayDrinks(display = document.getElementById("output")) {
-//   const selectedDrink = document.getElementsByTagName("option");
-//   selectedDrink.addEventListener("click", () => {
-//     display.textContent = selectedDrink;
-//   });
-// }
+function displayDrinks(coffee, coffeeInfo = display) {
+  coffeeInfo.innerHTML = `<div>
+  	<h3>${coffee.title}</h3>
+	<article>${coffee.description}
+	<p>Ingredients: ${coffee.ingredients.join(", ")}</p>
+	</article>
+  </div>`;
+  console.table(coffee.ingredients);
+}
